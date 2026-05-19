@@ -11,6 +11,8 @@ class MqttService extends ChangeNotifier {
   int distanceRear = 0;
   bool ledStatus = false;
   bool gripperStatus = false;
+  int speed = 50; // Kecepatan default
+
 
   final String broker = 'broker.hivemq.com';
   final int port = 1883;
@@ -58,9 +60,11 @@ class MqttService extends ChangeNotifier {
         // Handle incoming sensor data
         if (c[0].topic == 'krtmi/robot/sensor/distance_front') {
           distanceFront = int.tryParse(pt) ?? distanceFront;
+          _checkAutoLed();
           notifyListeners();
         } else if (c[0].topic == 'krtmi/robot/sensor/distance_rear') {
           distanceRear = int.tryParse(pt) ?? distanceRear;
+          _checkAutoLed();
           notifyListeners();
         }
       });
@@ -126,9 +130,24 @@ class MqttService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleLed() {
-    ledStatus = !ledStatus;
-    publishMessage('krtmi/robot/led', ledStatus ? 'on' : 'off');
+  void setSpeed(double newSpeed) {
+    speed = newSpeed.toInt();
+    publishMessage('krtmi/robot/speed', speed.toString());
     notifyListeners();
+  }
+
+  void emergencyStop() {
+    publishMessage('krtmi/robot/move', 'stop');
+    // Jika perlu, bisa publish ke topik khusus e-stop
+    notifyListeners();
+  }
+
+  void _checkAutoLed() {
+    // LED nyala jika jarak depan atau belakang kurang dari 15 cm (dan bukan 0/error)
+    bool shouldBeOn = (distanceFront > 0 && distanceFront < 15) || (distanceRear > 0 && distanceRear < 15);
+    if (shouldBeOn != ledStatus) {
+      ledStatus = shouldBeOn;
+      publishMessage('krtmi/robot/led', ledStatus ? 'on' : 'off');
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Untuk Haptic Feedback
 import 'package:provider/provider.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import '../mqtt_service.dart';
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(mqttService.isConnected ? Icons.wifi : Icons.wifi_off),
               color: mqttService.isConnected ? Colors.greenAccent : Colors.redAccent,
               onPressed: () {
+                HapticFeedback.lightImpact();
                 if (mqttService.isConnected) {
                   mqttService.disconnect();
                 } else {
@@ -75,19 +77,74 @@ class _HomeScreenState extends State<HomeScreen> {
                 
                 SizedBox(height: 20),
                 
-                // Sensor Section
+                // Sensor & Status Section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
                     children: [
-                      Expanded(child: _buildGlassCard('Jarak Depan', '${mqttService.distanceFront} cm', Icons.radar, Colors.cyanAccent)),
+                      Expanded(child: _buildGlassCard('Jarak Depan', '${mqttService.distanceFront} cm', Icons.radar, _getSensorColor(mqttService.distanceFront))),
                       SizedBox(width: 16),
-                      Expanded(child: _buildGlassCard('Jarak Belakang', '${mqttService.distanceRear} cm', Icons.sensors, Colors.purpleAccent)),
+                      Expanded(child: _buildGlassCard('Jarak Belakang', '${mqttService.distanceRear} cm', Icons.sensors, _getSensorColor(mqttService.distanceRear))),
                     ],
                   ),
                 ),
                 
+                SizedBox(height: 16),
+                
+                // Auto LED Status Indicator
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: _buildStatusIndicator(mqttService),
+                ),
+
                 SizedBox(height: 30),
+                
+                // Speed Control
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'KECEPATAN ROBOT',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.speed, color: Colors.cyanAccent, size: 20),
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: Colors.cyanAccent,
+                                inactiveTrackColor: Colors.white24,
+                                thumbColor: Colors.cyanAccent,
+                                overlayColor: Colors.cyanAccent.withOpacity(0.2),
+                              ),
+                              child: Slider(
+                                value: mqttService.speed.toDouble(),
+                                min: 0,
+                                max: 100,
+                                divisions: 10,
+                                label: '${mqttService.speed}%',
+                                onChanged: (value) {
+                                  mqttService.setSpeed(value);
+                                },
+                              ),
+                            ),
+                          ),
+                          Text('${mqttService.speed}%', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                
+                SizedBox(height: 20),
                 
                 // Control Section Title
                 Text(
@@ -118,7 +175,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: Icons.back_hand,
                               label: 'Ambil Barang',
                               gradient: LinearGradient(colors: [Color(0xFF11998E), Color(0xFF38EF7D)]),
-                              onPressed: () => mqttService.closeGripper(),
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                mqttService.closeGripper();
+                              },
                             ),
                           ),
                           SizedBox(width: 16),
@@ -127,20 +187,25 @@ class _HomeScreenState extends State<HomeScreen> {
                               icon: Icons.pan_tool_outlined,
                               label: 'Letakkan',
                               gradient: LinearGradient(colors: [Color(0xFFF2994A), Color(0xFFF2C94C)]),
-                              onPressed: () => mqttService.openGripper(),
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                mqttService.openGripper();
+                              },
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 20),
+                      // Emergency Stop
                       _buildGradientButton(
-                        icon: mqttService.ledStatus ? Icons.lightbulb : Icons.lightbulb_outline,
-                        label: mqttService.ledStatus ? 'LED Menyala' : 'LED Mati',
-                        gradient: mqttService.ledStatus 
-                            ? LinearGradient(colors: [Colors.yellow.shade700, Colors.orange.shade500])
-                            : LinearGradient(colors: [Colors.grey.shade700, Colors.grey.shade800]),
-                        onPressed: () => mqttService.toggleLed(),
+                        icon: Icons.warning_rounded,
+                        label: 'BERHENTI DARURAT',
+                        gradient: LinearGradient(colors: [Colors.red.shade900, Colors.redAccent.shade700]),
                         isFullWidth: true,
+                        onPressed: () {
+                          HapticFeedback.vibrate(); // Getar panjang/kuat
+                          mqttService.emergencyStop();
+                        },
                       ),
                     ],
                   ),
@@ -150,6 +215,43 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Color _getSensorColor(int distance) {
+    if (distance <= 0) return Colors.cyanAccent; // Default/No data
+    if (distance < 15) return Colors.redAccent; // Bahaya
+    if (distance < 30) return Colors.orangeAccent; // Awas
+    return Colors.greenAccent; // Aman
+  }
+
+  Widget _buildStatusIndicator(MqttService mqttService) {
+    bool isDanger = mqttService.ledStatus;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: isDanger ? Colors.redAccent.withOpacity(0.15) : Colors.greenAccent.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isDanger ? Colors.redAccent.withOpacity(0.5) : Colors.greenAccent.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            isDanger ? Icons.warning_amber_rounded : Icons.check_circle_outline,
+            color: isDanger ? Colors.redAccent : Colors.greenAccent,
+          ),
+          SizedBox(width: 8),
+          Text(
+            isDanger ? 'AWAS! Jarak Terlalu Dekat (LED Menyala)' : 'Status Aman (LED Mati)',
+            style: TextStyle(
+              color: isDanger ? Colors.redAccent : Colors.greenAccent,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -254,6 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(width: 12),
                     GestureDetector(
                       onTap: () {
+                        HapticFeedback.lightImpact();
                         setState(() {
                           isCameraRunning = !isCameraRunning;
                         });
@@ -292,33 +395,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildGlassCard(String title, String value, IconData icon, Color iconColor) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
+    // Membuat animasi perubahan warna lebih smooth
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: iconColor.withOpacity(0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: iconColor.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 1,
+          )
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 24),
                 ),
-                child: Icon(icon, color: iconColor, size: 24),
-              ),
-              SizedBox(height: 16),
-              Text(title, style: TextStyle(color: Colors.white60, fontSize: 12, fontWeight: FontWeight.w500)),
-              SizedBox(height: 4),
-              Text(value, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
-            ],
+                SizedBox(height: 16),
+                Text(title, style: TextStyle(color: Colors.white60, fontSize: 12, fontWeight: FontWeight.w500)),
+                SizedBox(height: 4),
+                Text(value, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+              ],
+            ),
           ),
         ),
       ),
@@ -368,7 +482,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildDirBtn(IconData icon, VoidCallback onPointerDown, VoidCallback onPointerUp) {
     return Listener(
-      onPointerDown: (event) => onPointerDown(),
+      onPointerDown: (event) {
+        HapticFeedback.lightImpact();
+        onPointerDown();
+      },
       onPointerUp: (event) => onPointerUp(),
       child: Material(
         color: Colors.transparent,
