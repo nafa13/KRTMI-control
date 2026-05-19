@@ -1,0 +1,24 @@
+name: krtmi_robot_control
+description: A new Flutter project for KRTMI Robot Control.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  mqtt_client: ^10.1.0
+  flutter_mjpeg: ^2.0.4
+  provider: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
