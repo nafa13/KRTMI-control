@@ -11,7 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _ipController = TextEditingController(text: 'http://192.168.1.100:81/stream');
+  final TextEditingController _ipController =
+      TextEditingController(text: 'http://192.168.1.100:81/stream');
   bool isCameraRunning = false;
 
   @override
@@ -33,27 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         centerTitle: true,
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 16),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: mqttService.isConnected ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
-            ),
-            child: IconButton(
-              icon: Icon(mqttService.isConnected ? Icons.wifi : Icons.wifi_off),
-              color: mqttService.isConnected ? Colors.greenAccent : Colors.redAccent,
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                if (mqttService.isConnected) {
-                  mqttService.disconnect();
-                } else {
-                  mqttService.connect('flutter_client_${DateTime.now().millisecondsSinceEpoch}');
-                }
-              },
-            ),
-          )
-        ],
+        actions: [],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -74,23 +55,33 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // Camera Section
                 _buildCameraSection(),
-                
+
                 SizedBox(height: 20),
-                
+
                 // Sensor & Status Section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
                     children: [
-                      Expanded(child: _buildGlassCard('Jarak Depan', '${mqttService.distanceFront} cm', Icons.radar, _getSensorColor(mqttService.distanceFront))),
+                      Expanded(
+                          child: _buildGlassCard(
+                              'Jarak Depan',
+                              '${mqttService.distanceFront} cm',
+                              Icons.radar,
+                              _getSensorColor(mqttService.distanceFront))),
                       SizedBox(width: 16),
-                      Expanded(child: _buildGlassCard('Jarak Belakang', '${mqttService.distanceRear} cm', Icons.sensors, _getSensorColor(mqttService.distanceRear))),
+                      Expanded(
+                          child: _buildGlassCard(
+                              'Jarak Belakang',
+                              '${mqttService.distanceRear} cm',
+                              Icons.sensors,
+                              _getSensorColor(mqttService.distanceRear))),
                     ],
                   ),
                 ),
-                
+
                 SizedBox(height: 16),
-                
+
                 // Auto LED Status Indicator
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -98,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 SizedBox(height: 30),
-                
+
                 // Speed Control
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -123,7 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 activeTrackColor: Colors.cyanAccent,
                                 inactiveTrackColor: Colors.white24,
                                 thumbColor: Colors.cyanAccent,
-                                overlayColor: Colors.cyanAccent.withOpacity(0.2),
+                                overlayColor:
+                                    Colors.cyanAccent.withOpacity(0.2),
                               ),
                               child: Slider(
                                 value: mqttService.speed.toDouble(),
@@ -137,15 +129,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
-                          Text('${mqttService.speed}%', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          Text('${mqttService.speed}%',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ],
                   ),
                 ),
-                
+
                 SizedBox(height: 20),
-                
+
                 // Control Section Title
                 Text(
                   'KONTROL GERAK',
@@ -157,12 +152,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                
+
                 // Modern D-Pad
                 _buildModernDPad(mqttService),
-                
+
                 SizedBox(height: 40),
-                
+
                 // Actions Section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -174,7 +169,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: _buildGradientButton(
                               icon: Icons.back_hand,
                               label: 'Ambil Barang',
-                              gradient: LinearGradient(colors: [Color(0xFF11998E), Color(0xFF38EF7D)]),
+                              subtitle: 'Payload: krtmi/robot/gripper -> close',
+                              gradient: LinearGradient(colors: [
+                                Color(0xFF11998E),
+                                Color(0xFF38EF7D)
+                              ]),
                               onPressed: () {
                                 HapticFeedback.mediumImpact();
                                 mqttService.closeGripper();
@@ -186,7 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: _buildGradientButton(
                               icon: Icons.pan_tool_outlined,
                               label: 'Letakkan',
-                              gradient: LinearGradient(colors: [Color(0xFFF2994A), Color(0xFFF2C94C)]),
+                              subtitle: 'Payload: krtmi/robot/gripper -> open',
+                              gradient: LinearGradient(colors: [
+                                Color(0xFFF2994A),
+                                Color(0xFFF2C94C)
+                              ]),
                               onPressed: () {
                                 HapticFeedback.mediumImpact();
                                 mqttService.openGripper();
@@ -200,7 +203,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildGradientButton(
                         icon: Icons.warning_rounded,
                         label: 'BERHENTI DARURAT',
-                        gradient: LinearGradient(colors: [Colors.red.shade900, Colors.redAccent.shade700]),
+                        gradient: LinearGradient(colors: [
+                          Colors.red.shade900,
+                          Colors.redAccent.shade700
+                        ]),
                         isFullWidth: true,
                         onPressed: () {
                           HapticFeedback.vibrate(); // Getar panjang/kuat
@@ -209,6 +215,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: _buildMqttStatusFooter(mqttService),
+                ),
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: _buildMqttLogPanel(mqttService),
                 ),
                 SizedBox(height: 40),
               ],
@@ -227,26 +243,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStatusIndicator(MqttService mqttService) {
-    bool isDanger = mqttService.ledStatus;
+    final ledMode = mqttService.ledMode;
+    final isFastBlink = ledMode == 'fast_blink';
+    final isSolidOn = ledMode == 'solid_on';
+    final isSlowBlink = ledMode == 'slow_blink';
+
+    final Color accentColor = isSolidOn
+        ? Colors.greenAccent
+        : isSlowBlink
+            ? Colors.orangeAccent
+            : Colors.cyanAccent;
+
+    final String statusText = isFastBlink
+        ? 'FAST BLINK: ESP32 sedang mencari WiFi / MQTT'
+        : isSolidOn
+            ? 'SOLID ON: Robot online dan siap menerima perintah'
+            : isSlowBlink
+                ? 'SLOW BLINK: Koneksi putus / connection lost'
+                : 'LED status belum terbaca';
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: isDanger ? Colors.redAccent.withOpacity(0.15) : Colors.greenAccent.withOpacity(0.1),
+        color: accentColor.withOpacity(0.12),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isDanger ? Colors.redAccent.withOpacity(0.5) : Colors.greenAccent.withOpacity(0.3)),
+        border: Border.all(color: accentColor.withOpacity(0.35)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            isDanger ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-            color: isDanger ? Colors.redAccent : Colors.greenAccent,
+            isSolidOn ? Icons.check_circle_outline : Icons.graphic_eq,
+            color: accentColor,
           ),
           SizedBox(width: 8),
           Text(
-            isDanger ? 'AWAS! Jarak Terlalu Dekat (LED Menyala)' : 'Status Aman (LED Mati)',
+            statusText,
             style: TextStyle(
-              color: isDanger ? Colors.redAccent : Colors.greenAccent,
+              color: accentColor,
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
@@ -290,7 +324,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: isCameraRunning ? Colors.cyanAccent.withOpacity(0.5) : Colors.white24, width: 2),
+                    border: Border.all(
+                        color: isCameraRunning
+                            ? Colors.cyanAccent.withOpacity(0.5)
+                            : Colors.white24,
+                        width: 2),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14),
@@ -302,9 +340,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.error_outline, color: Colors.redAccent, size: 40),
+                                  Icon(Icons.error_outline,
+                                      color: Colors.redAccent, size: 40),
                                   SizedBox(height: 8),
-                                  Text('Koneksi Gagal', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                                  Text('Koneksi Gagal',
+                                      style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
@@ -313,12 +355,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.videocam_off, color: Colors.white38, size: 48),
+                                Icon(Icons.videocam_off,
+                                    color: Colors.white38, size: 48),
                                 SizedBox(height: 12),
                                 Text(
                                   'Kamera Tidak Aktif\nTekan tombol Play',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white54, fontSize: 14),
+                                  style: TextStyle(
+                                      color: Colors.white54, fontSize: 14),
                                 ),
                               ],
                             ),
@@ -341,13 +385,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           controller: _ipController,
                           style: TextStyle(color: Colors.white, fontSize: 14),
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 16),
                             hintText: 'Masukkan URL Kamera',
                             hintStyle: TextStyle(color: Colors.white38),
                             border: InputBorder.none,
                             icon: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
-                              child: Icon(Icons.link, color: Colors.cyanAccent, size: 20),
+                              child: Icon(Icons.link,
+                                  color: Colors.cyanAccent, size: 20),
                             ),
                           ),
                         ),
@@ -365,20 +411,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
-                          gradient: isCameraRunning 
-                              ? LinearGradient(colors: [Colors.redAccent, Colors.deepOrange])
-                              : LinearGradient(colors: [Colors.cyan, Colors.blueAccent]),
+                          gradient: isCameraRunning
+                              ? LinearGradient(
+                                  colors: [Colors.redAccent, Colors.deepOrange])
+                              : LinearGradient(
+                                  colors: [Colors.cyan, Colors.blueAccent]),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: isCameraRunning ? Colors.redAccent.withOpacity(0.4) : Colors.cyan.withOpacity(0.4),
+                              color: isCameraRunning
+                                  ? Colors.redAccent.withOpacity(0.4)
+                                  : Colors.cyan.withOpacity(0.4),
                               blurRadius: 10,
                               offset: Offset(0, 4),
                             )
                           ],
                         ),
                         child: Icon(
-                          isCameraRunning ? Icons.stop_rounded : Icons.play_arrow_rounded,
+                          isCameraRunning
+                              ? Icons.stop_rounded
+                              : Icons.play_arrow_rounded,
                           color: Colors.white,
                           size: 30,
                         ),
@@ -394,7 +446,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGlassCard(String title, String value, IconData icon, Color iconColor) {
+  Widget _buildGlassCard(
+      String title, String value, IconData icon, Color iconColor) {
     // Membuat animasi perubahan warna lebih smooth
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
@@ -428,9 +481,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(icon, color: iconColor, size: 24),
                 ),
                 SizedBox(height: 16),
-                Text(title, style: TextStyle(color: Colors.white60, fontSize: 12, fontWeight: FontWeight.w500)),
+                Text(title,
+                    style: TextStyle(
+                        color: Colors.white60,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500)),
                 SizedBox(height: 4),
-                Text(value, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+                Text(value,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0)),
               ],
             ),
           ),
@@ -440,47 +502,82 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildModernDPad(MqttService mqttService) {
-    return Container(
-      width: 220,
-      height: 220,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.03),
-        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
-        boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 20),
-        ],
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Center core
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [Color(0xFF2C5364), Color(0xFF0F2027)],
-              ),
-              border: Border.all(color: Colors.cyanAccent.withOpacity(0.3), width: 2),
-              boxShadow: [
-                BoxShadow(color: Colors.cyanAccent.withOpacity(0.2), blurRadius: 15, spreadRadius: 1),
-              ],
-            ),
-            child: Icon(Icons.circle, color: Colors.cyanAccent.withOpacity(0.8), size: 24),
+    final isDisabled = mqttService.isArmBusy;
+
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 200),
+      opacity: isDisabled ? 0.35 : 1,
+      child: IgnorePointer(
+        ignoring: isDisabled,
+        child: Container(
+          width: 220,
+          height: 220,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white.withOpacity(0.03),
+            border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+            boxShadow: [
+              BoxShadow(color: Colors.black26, blurRadius: 20),
+            ],
           ),
-          // Arrows
-          Positioned(top: 10, child: _buildDirBtn(Icons.keyboard_arrow_up_rounded, () => mqttService.moveCommand('forward'), () => mqttService.moveCommand('stop'))),
-          Positioned(bottom: 10, child: _buildDirBtn(Icons.keyboard_arrow_down_rounded, () => mqttService.moveCommand('backward'), () => mqttService.moveCommand('stop'))),
-          Positioned(left: 10, child: _buildDirBtn(Icons.keyboard_arrow_left_rounded, () => mqttService.moveCommand('left'), () => mqttService.moveCommand('stop'))),
-          Positioned(right: 10, child: _buildDirBtn(Icons.keyboard_arrow_right_rounded, () => mqttService.moveCommand('right'), () => mqttService.moveCommand('stop'))),
-        ],
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Center core
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [Color(0xFF2C5364), Color(0xFF0F2027)],
+                  ),
+                  border: Border.all(
+                      color: Colors.cyanAccent.withOpacity(0.3), width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.cyanAccent.withOpacity(0.2),
+                        blurRadius: 15,
+                        spreadRadius: 1),
+                  ],
+                ),
+                child: Icon(Icons.circle,
+                    color: Colors.cyanAccent.withOpacity(0.8), size: 24),
+              ),
+              // Arrows
+              Positioned(
+                  top: 10,
+                  child: _buildDirBtn(
+                      Icons.keyboard_arrow_up_rounded,
+                      () => mqttService.moveCommand('forward'),
+                      () => mqttService.moveCommand('stop'))),
+              Positioned(
+                  bottom: 10,
+                  child: _buildDirBtn(
+                      Icons.keyboard_arrow_down_rounded,
+                      () => mqttService.moveCommand('backward'),
+                      () => mqttService.moveCommand('stop'))),
+              Positioned(
+                  left: 10,
+                  child: _buildDirBtn(
+                      Icons.keyboard_arrow_left_rounded,
+                      () => mqttService.moveCommand('left'),
+                      () => mqttService.moveCommand('stop'))),
+              Positioned(
+                  right: 10,
+                  child: _buildDirBtn(
+                      Icons.keyboard_arrow_right_rounded,
+                      () => mqttService.moveCommand('right'),
+                      () => mqttService.moveCommand('stop'))),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildDirBtn(IconData icon, VoidCallback onPointerDown, VoidCallback onPointerUp) {
+  Widget _buildDirBtn(
+      IconData icon, VoidCallback onPointerDown, VoidCallback onPointerUp) {
     return Listener(
       onPointerDown: (event) {
         HapticFeedback.lightImpact();
@@ -490,7 +587,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {}, 
+          onTap: () {},
           customBorder: CircleBorder(),
           splashColor: Colors.cyanAccent.withOpacity(0.3),
           highlightColor: Colors.cyanAccent.withOpacity(0.1),
@@ -511,6 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildGradientButton({
     required IconData icon,
     required String label,
+    String? subtitle,
     required Gradient gradient,
     required VoidCallback onPressed,
     bool isFullWidth = false,
@@ -533,13 +631,32 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon, color: Colors.white, size: 24),
           SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                if (subtitle != null) ...[
+                  SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.85),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ],
@@ -552,6 +669,172 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(16),
         child: isFullWidth ? buttonContent : buttonContent,
+      ),
+    );
+  }
+
+  Widget _buildMqttStatusFooter(MqttService mqttService) {
+    final isConnected = mqttService.isConnected;
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isConnected
+                  ? Colors.greenAccent.withOpacity(0.15)
+                  : Colors.redAccent.withOpacity(0.15),
+            ),
+            child: Icon(
+              isConnected ? Icons.wifi : Icons.wifi_off,
+              color: isConnected ? Colors.greenAccent : Colors.redAccent,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'MQTT Connection',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  isConnected
+                      ? 'Connected to ${mqttService.broker}:${mqttService.port}'
+                      : 'Disconnected from broker',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'LED mode: ${mqttService.ledMode}',
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 11,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Robot LWT: ${mqttService.robotOnline ? 'online' : 'offline'}',
+                  style: TextStyle(
+                    color: mqttService.robotOnline
+                        ? Colors.greenAccent
+                        : Colors.orangeAccent,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              if (isConnected) {
+                mqttService.disconnect();
+              } else {
+                mqttService.connect(
+                    'flutter_client_${DateTime.now().millisecondsSinceEpoch}');
+              }
+            },
+            child: Text(isConnected ? 'Disconnect' : 'Connect'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMqttLogPanel(MqttService mqttService) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.receipt_long, color: Colors.cyanAccent, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'MQTT LOG',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Container(
+            constraints: BoxConstraints(maxHeight: 280),
+            child: mqttService.logs.isEmpty
+                ? Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Belum ada log MQTT',
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                    ),
+                  )
+                : ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: mqttService.logs.length,
+                    separatorBuilder: (_, __) =>
+                        Divider(color: Colors.white12, height: 12),
+                    itemBuilder: (context, index) {
+                      final entry = mqttService.logs[index];
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            entry.formattedTime,
+                            style: TextStyle(
+                              color: Colors.cyanAccent,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              entry.message,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                height: 1.3,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
