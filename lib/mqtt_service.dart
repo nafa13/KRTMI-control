@@ -14,7 +14,7 @@ class MqttService extends ChangeNotifier {
   int speed = 50; // Kecepatan default
 
 
-  final String broker = 'broker.hivemq.com';
+  final String broker = 'test.mosquitto.org';
   final int port = 1883;
 
   Future<void> connect(String clientId) async {
