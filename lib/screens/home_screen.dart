@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             fontWeight: FontWeight.w800,
             fontSize: 20,
             letterSpacing: 1.2,
-            color: Colors.white,
+            color: Colors.black87,
           ),
         ),
         centerTitle: true,
@@ -42,9 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF0F2027),
-              Color(0xFF203A43),
-              Color(0xFF2C5364),
+              Color(0xFFF5F7FA),
+              Color(0xFFE4E9F2),
+              Color(0xFFD1DBE8),
             ],
           ),
         ),
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         'KECEPATAN ROBOT',
                         style: TextStyle(
-                          color: Colors.white70,
+                          color: Colors.black54,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 1.5,
@@ -107,15 +107,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Row(
                         children: [
-                          Icon(Icons.speed, color: Colors.cyanAccent, size: 20),
+                          Icon(Icons.speed, color: Colors.blueAccent, size: 20),
                           Expanded(
                             child: SliderTheme(
                               data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Colors.cyanAccent,
-                                inactiveTrackColor: Colors.white24,
-                                thumbColor: Colors.cyanAccent,
+                                activeTrackColor: Colors.blueAccent,
+                                inactiveTrackColor: Colors.black12,
+                                thumbColor: Colors.blueAccent,
                                 overlayColor:
-                                    Colors.cyanAccent.withOpacity(0.2),
+                                    Colors.blueAccent.withOpacity(0.2),
                               ),
                               child: Slider(
                                 value: mqttService.speed.toDouble(),
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Text('${mqttService.speed}%',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black87,
                                   fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'KONTROL GERAK',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.black54,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 2.0,
@@ -236,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color _getSensorColor(int distance) {
-    if (distance <= 0) return Colors.cyanAccent; // Default/No data
+    if (distance <= 0) return Colors.blueAccent; // Default/No data
     if (distance < 15) return Colors.redAccent; // Bahaya
     if (distance < 30) return Colors.orangeAccent; // Awas
     return Colors.greenAccent; // Aman
@@ -252,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ? Colors.greenAccent
         : isSlowBlink
             ? Colors.orangeAccent
-            : Colors.cyanAccent;
+            : Colors.blueAccent;
 
     final String statusText = isFastBlink
         ? 'FAST BLINK: ESP32 sedang mencari WiFi / MQTT'
@@ -297,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.cyanAccent.withOpacity(0.15),
+            color: Colors.blueAccent.withOpacity(0.15),
             blurRadius: 20,
             spreadRadius: 2,
             offset: Offset(0, 10),
@@ -311,9 +311,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.black87.withOpacity(0.05),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: Colors.black87.withOpacity(0.1)),
             ),
             child: Column(
               children: [
@@ -326,8 +326,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                         color: isCameraRunning
-                            ? Colors.cyanAccent.withOpacity(0.5)
-                            : Colors.white24,
+                            ? Colors.blueAccent.withOpacity(0.5)
+                            : Colors.black12,
                         width: 2),
                   ),
                   child: ClipRRect(
@@ -356,13 +356,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.videocam_off,
-                                    color: Colors.white38, size: 48),
+                                    color: Colors.black26, size: 48),
                                 SizedBox(height: 12),
                                 Text(
                                   'Kamera Tidak Aktif\nTekan tombol Play',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: Colors.white54, fontSize: 14),
+                                      color: Colors.black38, fontSize: 14),
                                 ),
                               ],
                             ),
@@ -379,21 +379,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: Colors.black26,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white12),
+                          border: Border.all(color: Colors.black12),
                         ),
                         child: TextField(
                           controller: _ipController,
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          style: TextStyle(color: Colors.black87, fontSize: 14),
                           decoration: InputDecoration(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 16),
                             hintText: 'Masukkan URL Kamera',
-                            hintStyle: TextStyle(color: Colors.white38),
+                            hintStyle: TextStyle(color: Colors.black26),
                             border: InputBorder.none,
                             icon: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
                               child: Icon(Icons.link,
-                                  color: Colors.cyanAccent, size: 20),
+                                  color: Colors.blueAccent, size: 20),
                             ),
                           ),
                         ),
@@ -415,13 +415,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? LinearGradient(
                                   colors: [Colors.redAccent, Colors.deepOrange])
                               : LinearGradient(
-                                  colors: [Colors.cyan, Colors.blueAccent]),
+                                  colors: [Colors.blue, Colors.blueAccent]),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
                               color: isCameraRunning
                                   ? Colors.redAccent.withOpacity(0.4)
-                                  : Colors.cyan.withOpacity(0.4),
+                                  : Colors.blue.withOpacity(0.4),
                               blurRadius: 10,
                               offset: Offset(0, 4),
                             )
@@ -452,7 +452,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.black87.withOpacity(0.05),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: iconColor.withOpacity(0.5)),
         boxShadow: [
@@ -483,13 +483,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 16),
                 Text(title,
                     style: TextStyle(
-                        color: Colors.white60,
+                        color: Colors.black45,
                         fontSize: 12,
                         fontWeight: FontWeight.w500)),
                 SizedBox(height: 4),
                 Text(value,
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black87,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.0)),
@@ -514,8 +514,8 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 220,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.03),
-            border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+            color: Colors.black87.withOpacity(0.03),
+            border: Border.all(color: Colors.black87.withOpacity(0.05), width: 1),
             boxShadow: [
               BoxShadow(color: Colors.black26, blurRadius: 20),
             ],
@@ -530,19 +530,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [Color(0xFF2C5364), Color(0xFF0F2027)],
+                    colors: [Color(0xFFD1DBE8), Color(0xFFF5F7FA)],
                   ),
                   border: Border.all(
-                      color: Colors.cyanAccent.withOpacity(0.3), width: 2),
+                      color: Colors.blueAccent.withOpacity(0.3), width: 2),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.cyanAccent.withOpacity(0.2),
+                        color: Colors.blueAccent.withOpacity(0.2),
                         blurRadius: 15,
                         spreadRadius: 1),
                   ],
                 ),
                 child: Icon(Icons.circle,
-                    color: Colors.cyanAccent.withOpacity(0.8), size: 24),
+                    color: Colors.blueAccent.withOpacity(0.8), size: 24),
               ),
               // Arrows
               Positioned(
@@ -589,16 +589,16 @@ class _HomeScreenState extends State<HomeScreen> {
         child: InkWell(
           onTap: () {},
           customBorder: CircleBorder(),
-          splashColor: Colors.cyanAccent.withOpacity(0.3),
-          highlightColor: Colors.cyanAccent.withOpacity(0.1),
+          splashColor: Colors.blueAccent.withOpacity(0.3),
+          highlightColor: Colors.blueAccent.withOpacity(0.1),
           child: Container(
             width: 60,
             height: 60,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.black87.withOpacity(0.05),
             ),
-            child: Icon(icon, color: Colors.white, size: 40),
+            child: Icon(icon, color: Colors.black87, size: 40),
           ),
         ),
       ),
@@ -678,9 +678,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.black87.withOpacity(0.05),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.black87.withOpacity(0.08)),
       ),
       child: Row(
         children: [
@@ -706,7 +706,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'MQTT Connection',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -717,7 +717,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? 'Connected to ${mqttService.broker}:${mqttService.port}'
                       : 'Disconnected from broker',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.black54,
                     fontSize: 12,
                   ),
                 ),
@@ -725,7 +725,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'LED mode: ${mqttService.ledMode}',
                   style: TextStyle(
-                    color: Colors.white54,
+                    color: Colors.black38,
                     fontSize: 11,
                   ),
                 ),
@@ -764,21 +764,21 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.black87.withOpacity(0.05),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.black87.withOpacity(0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.receipt_long, color: Colors.cyanAccent, size: 20),
+              Icon(Icons.receipt_long, color: Colors.blueAccent, size: 20),
               SizedBox(width: 8),
               Text(
                 'MQTT LOG',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                   letterSpacing: 1.0,
@@ -796,7 +796,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       'Belum ada log MQTT',
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                      style: TextStyle(color: Colors.black38, fontSize: 12),
                     ),
                   )
                 : ListView.separated(
@@ -804,7 +804,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: mqttService.logs.length,
                     separatorBuilder: (_, __) =>
-                        Divider(color: Colors.white12, height: 12),
+                        Divider(color: Colors.black12, height: 12),
                     itemBuilder: (context, index) {
                       final entry = mqttService.logs[index];
                       return Row(
@@ -813,7 +813,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             entry.formattedTime,
                             style: TextStyle(
-                              color: Colors.cyanAccent,
+                              color: Colors.blueAccent,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                             ),
@@ -823,7 +823,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(
                               entry.message,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.black87,
                                 fontSize: 12,
                                 height: 1.3,
                               ),

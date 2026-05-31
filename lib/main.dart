@@ -21,12 +21,13 @@ class MyApp extends StatelessWidget {
       title: 'KRTMI Controller',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Color(0xFF2D2D44),
-        scaffoldBackgroundColor: Color(0xFF1E1E2C),
-        colorScheme: ColorScheme.dark(
+        brightness: Brightness.light,
+        primaryColor: Colors.blueAccent,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.light(
           primary: Colors.blueAccent,
-          secondary: Colors.orange,
+          secondary: Colors.orangeAccent,
+          surface: Colors.white,
         ),
         fontFamily: 'Roboto',
       ),

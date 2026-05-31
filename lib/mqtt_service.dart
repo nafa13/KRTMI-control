@@ -36,7 +36,7 @@ class MqttService extends ChangeNotifier {
   double? _pendingSpeed;
   Timer? _armBusyTimer;
 
-  final String broker = '10.133.44.216';
+  final String broker = '10.99.235.199';
   final int port = 1883;
 
   List<MqttLogEntry> get logs => List.unmodifiable(_logs);

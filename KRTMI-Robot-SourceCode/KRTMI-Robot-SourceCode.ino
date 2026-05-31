@@ -5,7 +5,7 @@
 // ================= PENGATURAN WIFI & MQTT =================
 const char* ssid = "POCO-X3-GT";
 const char* password = "12345678910";
-const char* mqtt_server = "10.133.44.216";
+const char* mqtt_server = "10.99.235.199";
 const int mqtt_port = 1883;
 
 const char* topic_sub_move    = "krtmi/robot/move";
